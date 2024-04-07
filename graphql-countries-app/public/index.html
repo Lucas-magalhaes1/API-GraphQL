@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta de Países</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="/index.js"></script>
+  <script>
+    function searchCountry() {
+      var input = document.getElementById('countryInput').value;
+      var country = input.trim().toLowerCase();
+
+      var query = `
+        query {
+          country(code: "${country}") {
+            name
+            capital
+            population
+            currency
+          }
+        }
+      `;
+
+      fetch('https://countries.trevorblades.com/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
+      })
+      .then(response => response.json())
+      .then(data => {
+        var countryData = data.data.country;
+        if (countryData) {
+          alert(`
+            Nome: ${countryData.name}
+            Capital: ${countryData.capital}
+            População: ${countryData.population}
+            Moeda: ${countryData.currency}
+          `);
+        } else {
+          alert('País não encontrado.');
+        }
+      })
+      .catch(error => {
+        console.error('Ocorreu um erro:', error);
+      });
+    }
+  </script>
+</body>
+</html>
